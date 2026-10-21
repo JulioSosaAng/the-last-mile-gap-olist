@@ -31,27 +31,123 @@ def load_data():
 
 df = load_data()
 
+@st.cache_data
+def load_categorias():
+    query = """
+    SELECT 
+        COALESCE(pct.product_category_name_english, p.product_category_name) AS categoria,
+        ROUND(AVG(r.review_score), 2) AS resena_promedio,
+        ROUND((SUM(CASE WHEN o.order_delivered_customer_date > o.order_estimated_delivery_date THEN 1 ELSE 0 END) * 100.0 / COUNT(DISTINCT o.order_id)), 2) AS porcentaje_tardios
+    FROM order_items oi
+    JOIN products p ON oi.product_id = p.product_id
+    LEFT JOIN product_category_name_translation pct ON p.product_category_name = pct.product_category_name
+    JOIN orders o ON oi.order_id = o.order_id
+    LEFT JOIN order_reviews r ON o.order_id = r.order_id
+    WHERE o.order_status = 'delivered' AND p.product_category_name IS NOT NULL
+    GROUP BY p.product_category_name, pct.product_category_name_english
+    HAVING COUNT(DISTINCT o.order_id) > 100
+    ORDER BY resena_promedio ASC
+    LIMIT 10;
+    """
+    return pd.read_sql(query, engine)
+
+df_cat = load_categorias()
+
+@st.cache_data
+def load_sellers():
+    query = """
+    SELECT 
+        LEFT(s.seller_id, 8) AS seller_id_corto,
+        s.seller_state,
+        COUNT(DISTINCT oi.order_id) AS total_pedidos,
+        SUM(CASE WHEN o.order_delivered_customer_date > o.order_estimated_delivery_date THEN 1 ELSE 0 END) AS pedidos_tardios
+    FROM order_items oi
+    JOIN sellers s ON oi.seller_id = s.seller_id
+    JOIN orders o ON oi.order_id = o.order_id
+    WHERE o.order_status = 'delivered' AND o.order_delivered_customer_date IS NOT NULL
+    GROUP BY s.seller_id, s.seller_state
+    HAVING COUNT(DISTINCT oi.order_id) > 50
+    ORDER BY pedidos_tardios DESC
+    LIMIT 10;
+    """
+    return pd.read_sql(query, engine)
+
+df_sell = load_sellers()
+
 # --- INTERFAZ ---
 st.title("📦 The Last Mile Gap")
 st.markdown("### Análisis de Retrasos y Satisfacción en Olist")
 
-# KPIs Principales
-col1, col2, col3 = st.columns(3)
+# --- BARRA LATERAL (Filtros) ---
+# Va primero para que los KPIs y gráficos se enteren de los filtros
+st.sidebar.header("Filtros Interactivos")
 
-total_pedidos = len(df)
-pedidos_tardios = df['is_late'].sum()
-tasa_tardios = (pedidos_tardios / total_pedidos) * 100
-resena_promedio_tarde = df[df['is_late'] == 1]['review_score'].mean()
+# 1. Filtro de Estados
+lista_estados = sorted(df['customer_state'].unique())
 
-col1.metric("Total Pedidos Analizados", f"{total_pedidos:,}")
-col2.metric("Tasa de Pedidos Tardíos", f"{tasa_tardios:.2f}%")
-col3.metric("Reseña Promedio (Tardíos)", f"{resena_promedio_tarde:.2f} ⭐")
+# Calculamos los peores 10 estados para tenerlos a mano
+peores_10_estados = df.groupby('customer_state')['is_late'].mean().sort_values(ascending=False).head(10).index.tolist()
+
+# Selector de modo simplificado (solo 2 opciones)
+st.sidebar.markdown("**Vista de Estados:**")
+modo_estado = st.sidebar.radio(
+    "Selecciona un modo:",
+    ["Top 10 Peores", "Personalizado"], 
+    label_visibility="collapsed"
+)
+
+# Lógica según el modo elegido
+if modo_estado == "Top 10 Peores":
+    estados_seleccionados = peores_10_estados
+else:
+    estados_seleccionados = st.sidebar.multiselect(
+        "Selecciona los Estados:",
+        options=lista_estados,
+        default=peores_10_estados
+    )
+
+# Filtramos el DataFrame principal
+if estados_seleccionados:
+    df_filtrado = df[df['customer_state'].isin(estados_seleccionados)]
+else:
+    df_filtrado = df.copy()
+
+# 2. Filtro de Categoría
+st.sidebar.markdown("---")
+categorias_disponibles = sorted(df_cat['categoria'].unique())
+categoria_seleccionada = st.sidebar.multiselect(
+    "Filtrar por Categoría (Gráfico 3):",
+    options= categorias_disponibles,
+    default= []
+)
+
+# 3. Filtro de Seller
+sellers_disponibles = sorted(df_sell['seller_id_corto'].unique())
+seller_seleccionado = st.sidebar.multiselect(
+    "Filtrar por Seller ID (Gráfico 4):",
+    options= sellers_disponibles,
+    default= []
+)
+
+# KPIs Principales (Ahora usan df_filtrado)
+col1, col2, col3, col4 = st.columns(4)
+
+total_pedidos = len(df_filtrado)
+pedidos_tardios = df_filtrado['is_late'].sum()
+tasa_tardios = (pedidos_tardios / total_pedidos) * 100 if total_pedidos > 0 else 0
+resena_promedio_tarde = df_filtrado[df_filtrado['is_late'] == 1]['review_score'].mean()
+resena_promedio_general = df_filtrado['review_score'].mean()
+
+col1.metric("Total Pedidos", f"{total_pedidos:,}")
+col2.metric("Tasa de Tardíos", f"{tasa_tardios:.2f}%")
+col3.metric("Reseña Prom. General", f"{resena_promedio_general:.2f} ⭐")
+col4.metric("Reseña Prom. (Tardíos)", f"{resena_promedio_tarde:.2f} ⭐")
 
 st.divider()
 
-# Gráfico 1: La brecha de satisfacción (Pregunta 1)
+# Gráfico 1: La brecha de satisfacción (Usa df_filtrado)
 st.subheader("1. Impacto del retraso en la satisfacción")
-df_agrupado = df.groupby('is_late')['review_score'].mean().reset_index()
+df_agrupado = df_filtrado.groupby('is_late')['review_score'].mean().reset_index()
 df_agrupado['Estado'] = df_agrupado['is_late'].map({0: 'A tiempo', 1: 'Tardío'})
 
 fig1 = px.bar(df_agrupado, x='Estado', y='review_score', 
@@ -68,23 +164,6 @@ fig1.update_traces(texttemplate='<b>%{y:.2f}</b>', textfont_size=16)
 st.plotly_chart(fig1, use_container_width=True)
 
 st.info("💡 **Hallazgo:** Los pedidos tardíos reducen la calificación promedio en casi 1.7 estrellas (de 4.29 a 2.57).")
-
-# --- BARRA LATERAL (Filtros) ---
-st.sidebar.header("Filtros Interactivos")
-# Creamos una lista con todos los estados disponibles
-lista_estados = df['customer_state'].unique()
-# El usuario puede elegir uno o varios estados
-estados_seleccionados = st.sidebar.multiselect(
-    "Selecciona los Estados (customer_state):",
-    options=lista_estados,
-    default=lista_estados[:5] # Por defecto mostramos 5 para no saturar
-)
-
-# Filtramos el DataFrame original según la selección del usuario
-if estados_seleccionados:
-    df_filtrado = df[df['customer_state'].isin(estados_seleccionados)]
-else:
-    df_filtrado = df # Si no selecciona nada, mostramos todo
 
 # --- GRÁFICO 2: Retraso por Estado (Pregunta 2) ---
 st.divider()
@@ -112,7 +191,12 @@ fig2.update_layout(
     coloraxis_cmin=0,
     coloraxis_cmax=15,
     xaxis=dict(title_font=dict(color='black'), tickfont=dict(color='black')),
-    yaxis=dict(title_font=dict(color='black'), tickfont=dict(color='black'))
+    yaxis=dict(title_font=dict(color='black'), tickfont=dict(color='black')),
+    hoverlabel=dict(
+                bgcolor="white",          
+                font=dict(color="black", size=14), 
+                bordercolor="black"       
+            )
 )
 
 # Forzamos el color del texto a negro para que se lea sobre el amarillo
@@ -131,34 +215,19 @@ st.subheader("3. Análisis por Sellers y Categorías")
 col_izq, col_der = st.columns(2)
 
 # 1. Consulta para Categorías (Pregunta 4)
-@st.cache_data
-def load_categorias():
-    query = """
-    SELECT 
-        COALESCE(pct.product_category_name_english, p.product_category_name) AS categoria,
-        ROUND(AVG(r.review_score), 2) AS resena_promedio,
-        ROUND((SUM(CASE WHEN o.order_delivered_customer_date > o.order_estimated_delivery_date THEN 1 ELSE 0 END) * 100.0 / COUNT(DISTINCT o.order_id)), 2) AS porcentaje_tardios
-    FROM order_items oi
-    JOIN products p ON oi.product_id = p.product_id
-    LEFT JOIN product_category_name_translation pct ON p.product_category_name = pct.product_category_name
-    JOIN orders o ON oi.order_id = o.order_id
-    LEFT JOIN order_reviews r ON o.order_id = r.order_id
-    WHERE o.order_status = 'delivered' AND p.product_category_name IS NOT NULL
-    GROUP BY p.product_category_name, pct.product_category_name_english
-    HAVING COUNT(DISTINCT o.order_id) > 100
-    ORDER BY resena_promedio ASC
-    LIMIT 10;
-    """
-    return pd.read_sql(query, engine)
 
-df_cat = load_categorias()
 
 with col_izq:
+    # Aplicamos el filtro de categoría
+    if categoria_seleccionada:
+        df_cat_filtrado = df_cat[df_cat['categoria'].isin(categoria_seleccionada)]
+    else:
+        df_cat_filtrado = df_cat
     st.markdown("**Top 10 Categorías con peor reseña**")
     
     # Scatter plot limpio, sin textos superpuestos
     fig3 = px.scatter(
-        df_cat, 
+        df_cat_filtrado, 
         x='porcentaje_tardios', 
         y='resena_promedio',
         hover_name='categoria', # Muestra el nombre al pasar el mouse
@@ -195,31 +264,17 @@ with col_izq:
     st.caption("Pasa el mouse por los puntos para ver la categoría. Muebles de oficina y electrónica tienen malas reseñas incluso con pocos retrasos (problema de producto), mientras que 'audio' sufre ambos problemas.")
 
 # 2. Consulta para Sellers (Pregunta 3)
-@st.cache_data
-def load_sellers():
-    query = """
-    SELECT 
-        LEFT(s.seller_id, 8) AS seller_id_corto,
-        s.seller_state,
-        COUNT(DISTINCT oi.order_id) AS total_pedidos,
-        SUM(CASE WHEN o.order_delivered_customer_date > o.order_estimated_delivery_date THEN 1 ELSE 0 END) AS pedidos_tardios
-    FROM order_items oi
-    JOIN sellers s ON oi.seller_id = s.seller_id
-    JOIN orders o ON oi.order_id = o.order_id
-    WHERE o.order_status = 'delivered' AND o.order_delivered_customer_date IS NOT NULL
-    GROUP BY s.seller_id, s.seller_state
-    HAVING COUNT(DISTINCT oi.order_id) > 50
-    ORDER BY pedidos_tardios DESC
-    LIMIT 10;
-    """
-    return pd.read_sql(query, engine)
-
-df_sell = load_sellers()
 
 with col_der:
+    # Aplicamos el filtro de seller
+    if seller_seleccionado:
+        df_sell_filtrado = df_sell[df_sell['seller_id_corto'].isin(seller_seleccionado)]
+    else:
+        df_sell_filtrado = df_sell
+
     st.markdown("**Top 10 Sellers con más pedidos tardíos**")
     fig4 = px.bar(
-        df_sell,
+        df_sell_filtrado,
         x='pedidos_tardios',
         y='seller_id_corto', # Usamos el ID corto
         orientation='h',
