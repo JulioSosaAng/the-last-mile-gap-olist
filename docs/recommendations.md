@@ -51,3 +51,36 @@
   - 3 ítems: 1.306 pedidos (6.20% tardíos).
   - 4+ ítems: 937 pedidos (6.19% tardíos).
 - **Conclusión preliminar:** El retraso es transversal a todos los tamaños de pedido. La diferencia entre pedidos de 1 ítem y múltiples ítems no es lo suficientemente significativa como para sesgar los hallazgos anteriores. El problema logístico es sistémico.
+
+---
+
+# Recomendaciones Accionables (Plan de Acción)
+
+Basado en los 5 hallazgos anteriores, se proponen las siguientes 3 acciones priorizadas para la Gerencia de Operaciones de Olist.
+
+## Recomendación 1: Intervención y auditoría a Sellers de Alto Volumen en SP
+- **Problema:** Sellers de São Paulo concentran el mayor volumen absoluto de pedidos tardíos (hasta 216 retrasos por seller) y reseñas bajas (3.35).
+- **Acción:** Auditar los procesos de despacho de los Top 10 sellers de SP con mayor volumen de quejas. Implementar un SLA (Acuerdo de Nivel de Servicio) más estricto o multas por despacho tardío.
+- **Segmento objetivo:** Top 10 Sellers de SP por volumen de ventas.
+- **KPI que mejora:** Tasa de entregas tardías y reseña promedio general (brecha de satisfacción).
+- **Esfuerzo estimado:** Medio (Requiere gestión comercial y análisis de contratos).
+- **Impacto estimado:** Alto (Reduciría miles de quejas al año concentradas en pocos actores).
+
+## Recomendación 2: Plan Logístico Especial para el Nordeste
+- **Problema:** Los estados de AL, MA, PI, CE y SE presentan las peores tasas porcentuales de retraso (llegando a 23.94% en Alagoas).
+- **Acción:** Negociar tarifas y rutas preferenciales con operadores logísticos para la región Nordeste. Ajustar los plazos de entrega estimados en la plataforma para que sean más realistas y no defrauden al cliente.
+- **Segmento objetivo:** Clientes en los estados de la región Nordeste.
+- **KPI que mejora:** Tasa de retraso por estado y expectativa del cliente (evitar el retraso percibido).
+- **Esfuerzo estimado:** Alto (Requiere renegociación con transportistas externos).
+- **Impacto estimado:** Alto (Mejora drástica de la experiencia en un 20-25% de la población brasileña).
+
+## Recomendación 3: Mejora en Empaque y Logística de Categorías Críticas
+- **Problema:** Categorías como `office_furniture`, `audio` y `home_confort` combinan altos porcentajes de retraso (11% - 13%) con malas reseñas.
+- **Acción:** Implementar un programa de capacitación para sellers de estas categorías sobre embalaje seguro para productos frágiles y voluminosos. Priorizar el uso de transportistas especializados en carga pesada.
+- **Segmento objetivo:** Sellers de las categorías `office_furniture`, `audio` y `home_confort`.
+- **KPI que mejora:** Reseña promedio por categoría.
+- **Esfuerzo estimado:** Medio (Creación de guías de embalaje y comunicación).
+- **Impacto estimado:** Medio-Alto (Mejora en la percepción de calidad del producto y reduce devoluciones).
+
+---
+*Nota: Las estimaciones de esfuerzo e impacto son hipótesis de negocio basadas en el análisis descriptivo, no en modelos predictivos.*
