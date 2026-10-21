@@ -26,7 +26,7 @@ Aplica a todas las historias de usuario:
 | :--- | :--- | :--- |
 | 1 | Fundación y pipeline | US-01 a US-04 |
 | 2 | Análisis MVP y recomendaciones | US-05 a US-10 |
-| 3 | Dashboard y artefactos de soporte | US-11 a US-15 |
+| 3 | Dashboard y artefactos de soporte | US-11 a US-16 |
 
 ---
 
@@ -214,6 +214,17 @@ Aplica a todas las historias de usuario:
 - [ ] Sección "por qué estas herramientas" (justifica Streamlit, Plotly, PostgreSQL)
 - [ ] Retrospectivas de iteraciones 1 y 2 documentadas en `docs/retrospectives.md` (o sección en README)
 - [ ] Badge de Streamlit y enlace a la URL pública del dashboard
+
+### US-16: Visualizaciones exploratorias (EDA)
+**Como** analista, **quiero** crear los gráficos de las preguntas 1, 2 y 4 en un notebook para validar visualmente los hallazgos antes de pasarlos al dashboard final.
+
+**Prioridad:** Should  · **Estimación:** 5
+
+**Criterios de aceptación:**
+- [ ] Gráfico de barras/violín para la brecha de reseña (Pregunta 1).
+- [ ] Mapa de calor o barras para la tasa de retraso por estado (Pregunta 2).
+- [ ] Gráfico de dispersión para categorías de producto (Pregunta 4).
+- [ ] Todo documentado y exportado en notebooks/01_eda.ipynb.
 
 ---
 
