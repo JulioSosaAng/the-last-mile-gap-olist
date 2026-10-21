@@ -7,6 +7,7 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.x-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Plotly](https://img.shields.io/badge/Plotly-5.x-3F4F75?logo=plotly&logoColor=white)](https://plotly.com/)
 [![Status](https://img.shields.io/badge/status-en%20desarrollo-yellow)]()
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://the-last-mile-gap-olist.streamlit.app/)
 
 ## 📌 Sobre el proyecto
 
@@ -99,6 +100,7 @@ python etl/load_olist.py
 ```bash
 streamlit run dashboard/app.py
 ```
+🌐**Ver aplicación en vivo:** [The Last Mile Gap Dashboard](https://the-last-mile-gap-olist.streamlit.app/)
 
 ## 📚 Documentación
 
