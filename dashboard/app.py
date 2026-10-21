@@ -158,7 +158,12 @@ fig1.update_layout(
     showlegend=False, 
     height=400,
     xaxis=dict(title_font=dict(color='black'), tickfont=dict(color='black')),
-    yaxis=dict(title_font=dict(color='black'), tickfont=dict(color='black'))
+    yaxis=dict(title_font=dict(color='black'), tickfont=dict(color='black')),
+    hoverlabel=dict(
+                    bgcolor="white",          
+                    font=dict(color="black", size=14), 
+                    bordercolor="black"       
+                )
 )
 fig1.update_traces(texttemplate='<b>%{y:.2f}</b>', textfont_size=16)
 st.plotly_chart(fig1, use_container_width=True)
