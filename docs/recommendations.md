@@ -21,4 +21,12 @@
   5. SE (Sergipe): 15.22%.
 - **Conclusión preliminar:** El problema no está distribuido uniformemente. Existe una fuerte correlación geográfica: los estados de la región Nordeste (más alejados de los principales centros de distribución) sufren las peores tasas de demora. Esto sugiere que las recomendaciones deben incluir acuerdos logísticos específicos para esta región.
 
-*(Próximamente: Hallazgos 3 y 4 con las recomendaciones accionables)*
+## Hallazgo 3: Sellers de alto volumen con foco de insatisfacción
+*(Responde a la Pregunta 3 del Business Case)*
+
+- **Metodología:** Se cruzaron los ítems de pedidos, sellers y reseñas, agrupando por `seller_id` y filtrando por volumen (>50 pedidos).
+- **Resultado (Top sellers con más pedidos tardíos):** 
+  Los 5 sellers con peor performance absoluta están radicados en **SP (São Paulo)**. A pesar de tener una tasa de retraso porcentual menor que los estados del Nordeste, su enorme volumen de ventas hace que concentren entre 131 y 216 pedidos tardíos cada uno, con reseñas promedio que caen a **3.35 - 4.14**.
+- **Conclusión preliminar:** Existen dos focos de acción: 1) Mejoras logísticas regionales en el Nordeste, y 2) Intervención directa (auditoría o acuerdos) con los grandes sellers de São Paulo para reducir su volumen de quejas y mejorar su reseña.
+
+*(Próximamente: Hallazgo 4 con las recomendaciones accionables)*
