@@ -82,5 +82,17 @@ Basado en los 5 hallazgos anteriores, se proponen las siguientes 3 acciones prio
 - **Esfuerzo estimado:** Medio (Creación de guías de embalaje y comunicación).
 - **Impacto estimado:** Medio-Alto (Mejora en la percepción de calidad del producto y reduce devoluciones).
 
+## Riesgos y Supuestos de las Recomendaciones
+
+**Supuestos:**
+1. Se asume que los centros de distribución principales de Olist (y de la mayoría de sus sellers) siguen estando concentrados en la región Sudeste (especialmente São Paulo), lo que explica la diferencia de tiempos hacia el Nordeste.
+2. Se asume que el `review_score` refleja fielmente la experiencia de entrega y no está influenciado por otros factores externos no capturados en el dataset (como atención al cliente post-venta).
+3. Los plazos estimados de entrega (`order_estimated_delivery_date`) son fijados por Olist o los sellers, y no por los operadores logísticos.
+
+**Riesgos:**
+1. **Resistencia de los sellers:** Auditar o presionar a los grandes sellers de SP puede generar fricción comercial o pérdida de volumen a corto plazo si no se maneja con cuidado.
+2. **Dependencia de terceros:** Las mejoras logísticas en el Nordeste dependen de la capacidad y voluntad de los operadores logísticos externos para renegociar rutas y tarifas.
+3. **Efecto de "expectativa":** Ajustar los plazos estimados para que sean más realistas reducirá la tasa de retraso *percibido* (el KPI), pero no necesariamente acelerará la entrega física real. El cliente podría seguir insatisfecho si la espera sigue siendo muy larga.
+
 ---
 *Nota: Las estimaciones de esfuerzo e impacto son hipótesis de negocio basadas en el análisis descriptivo, no en modelos predictivos.*
