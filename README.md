@@ -108,9 +108,11 @@ streamlit run dashboard/app.py
 | :--- | :--- |
 | [`docs/business_case.md`](docs/business_case.md) | Contexto, problema, objetivo, KPIs, alcance y criterios de éxito |
 | [`docs/backlog.md`](docs/backlog.md) | Historias de usuario, criterios de aceptación e iteraciones |
-| `docs/recommendations.md` | (en construcción) Acciones priorizadas basadas en hallazgos |
-| `docs/process_model.md` | (en construcción) Modelo AS-IS / TO-BE del proceso logístico |
-| `docs/executive_summary.md` | (en construcción) Resumen ejecutivo de 1 página |
+| [`docs/recommendations.md`](docs/recommendations.md) | Hallazgos y acciones priorizadas basadas en el análisis |
+| [`docs/process_model.md`](docs/process_model.md) | Modelo AS-IS / TO-BE del proceso logístico |
+| [`docs/executive_summary.md`](docs/executive_summary.md) | Resumen ejecutivo de 1 página para stakeholders |
+| [`docs/data_quality.md`](docs/data_quality.md) | Reporte de calidad y limpieza del dato |
+| [`docs/retrospectives.md`](docs/retrospectives.md) | Retrospectivas ágiles por iteración |
 
 ## 🧭 Por qué estas herramientas
 
@@ -131,6 +133,14 @@ streamlit run dashboard/app.py
 ## 🚫 Fuera de alcance
 
 Este proyecto no incluye modelos predictivos de ML, análisis de sentimiento sobre texto libre, cálculo de CLV ni integración con datos externos. El foco es el análisis descriptivo y la priorización accionable. Las extensiones futuras se documentan en la sección 10 del business case.
+
+## 🔄 Metodología y Retrospectivas
+
+El proyecto se gestionó utilizando marcos de trabajo ágiles (Scrum/Kanban) a través de GitHub Projects, dividiendo el trabajo en 3 iteraciones (Sprints). 
+
+Cada iteración concluyó con una retrospectiva documentada, donde se registraron los aprendizajes técnicos y las mejoras implementadas (como la optimización de la carga masiva de datos y la resolución de conflictos de dependencias en el despliegue).
+
+👉 Podés leer las retrospectivas completas en [`docs/retrospectives.md`](docs/retrospectives.md).
 
 ## 👤 Autor
 
