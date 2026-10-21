@@ -40,3 +40,14 @@
   4. `audio`: 3.83 estrellas (13.22% de retrasos).
   5. `home_confort`: 3.85 estrellas (11.22% de retrasos).
 - **Conclusión preliminar:** No todas las malas reseñas son culpa de la logística. Categorías como `fixed_telephony` y `fashion_male_clothing` tienen retrasos bajos pero reseñas malas (problema de producto/expectativa). En cambio, `audio`, `home_confort` y `office_furniture` combinan malas reseñas con altas tasas de retraso, lo que requiere intervención logística urgente (embalaje y transporte de voluminosos/frágiles).
+
+## Hallazgo 5: Impacto de la cantidad de ítems en los retrasos
+*(Responde a la Pregunta 5 del Business Case)*
+
+- **Metodología:** Agrupación de pedidos según la cantidad de ítems y cálculo de la tasa de retraso por grupo.
+- **Resultado:**
+  - 1 ítem: 86.835 pedidos (8.29% tardíos).
+  - 2 ítems: 7.392 pedidos (6.63% tardíos).
+  - 3 ítems: 1.306 pedidos (6.20% tardíos).
+  - 4+ ítems: 937 pedidos (6.19% tardíos).
+- **Conclusión preliminar:** El retraso es transversal a todos los tamaños de pedido. La diferencia entre pedidos de 1 ítem y múltiples ítems no es lo suficientemente significativa como para sesgar los hallazgos anteriores. El problema logístico es sistémico.
